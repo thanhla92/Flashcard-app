@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useHistory, useParams } from "react-router-dom";
 import { readDeck, deleteDeck } from "../utils/api";
+import { deleteCard } from "../utils/api";
 
 function DeckScreen() {
   const history = useHistory();
@@ -30,6 +31,21 @@ function DeckScreen() {
       }
     }
   };
+
+  const handleDeleteCard = async (cardId) => {
+    if (window.confirm("Are you sure you want to delete this card?")) {
+      try {
+        await deleteCard(cardId); // Use the correct API function to delete the card
+        setDeck((prevDeck) => ({
+          ...prevDeck,
+          cards: prevDeck.cards.filter((card) => card.id !== cardId),
+        }));
+      } catch (error) {
+        // Handle error
+      }
+    }
+  };
+
 
   if (!deck) {
     return <div>Loading...</div>;
@@ -83,7 +99,7 @@ function DeckScreen() {
               </Link>
               <button
                 className="btn btn-danger"
-                onClick={() => handleDelete(card.id)}
+                onClick={() => handleDeleteCard(card.id)}
               >
                 Delete
               </button>
